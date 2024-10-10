@@ -1007,15 +1007,6 @@ cat("Median:", median_value, "\n")
 cat("Max:", max_value, "\n")
 cat("Min:", min_value, "\n")
 ```
-```{r}
-library(ggplot2)
-ggplot(data1_filtered, aes(x = Schooling, y = `Life.expectancy`)) +
-  geom_point() +
-  labs(title = "Relationship between Schooling and Life Expectancy",
-       x = "Years of Schooling",
-       y = "Life Expectancy") +
-  geom_smooth(method = "lm", se = FALSE, color = "blue")
-```
 
 
 ```{r}
