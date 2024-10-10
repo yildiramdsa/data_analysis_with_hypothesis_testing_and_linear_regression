@@ -986,7 +986,84 @@ In summary, HDI and Years of Schooling have strong positive correlations with Li
 
 # Hypothesis Testing
 
+
+#Hypothesis Testing and Linear Regression for Schooling
+
+Null hypothesis (H0) that there is no relationship between schooling and life expectancy.
+Alternative hypothesis (H1) More schooling leads to higher life expectancy
+```{r}
+data1_filtered <- dataset[dataset$Schooling != 0, ]
+data1_filtered <- data1_filtered[!(data1_filtered$Schooling == 0 | data1_filtered$Schooling == "" | is.na(data1_filtered$Schooling) | data1_filtered$`Life.expectancy` == 0 | data1_filtered$`Life.expectancy` == "" | is.na(data1_filtered$`Life.expectancy`)), ]
+
+
+mean_value <- mean(data1_filtered$Schooling)
+median_value <- median(data1_filtered$Schooling)
+max_value <- max(data1_filtered$Schooling)
+min_value <- min(data1_filtered$Schooling)
+
+
+cat("Mean:", mean_value, "\n")
+cat("Median:", median_value, "\n")
+cat("Max:", max_value, "\n")
+cat("Min:", min_value, "\n")
+```
+```{r}
+library(ggplot2)
+ggplot(data1_filtered, aes(x = Schooling, y = `Life.expectancy`)) +
+  geom_point() +
+  labs(title = "Relationship between Schooling and Life Expectancy",
+       x = "Years of Schooling",
+       y = "Life Expectancy") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue")
+```
+
+
+```{r}
+model <- lm(`Life.expectancy` ~ Schooling, data = data1_filtered)
+
+model_summary <- summary(model)
+model_summary
+```
+Very low p value, can reject null hypothesis, is a relationship between schooling and life expectancy. Schooling has a statistically significant effect on life expectancy.
+
+41.3 is estimated life expectancy when schooling is 0, life expectancy expected to increased by about 2.32 years for every year of schooling.
+
+R-squared of 0.6139 suggests that 61.39% of the variance in life expectancy is explained by schooling
+
+```{r}
+coef_summary <- summary(model)$coefficients
+t_statistic <- coef_summary["Schooling", "Estimate"] / coef_summary["Schooling", "Std. Error"]
+
+df <- model$df.residual
+
+alpha <- 0.05
+t_critical <- qt(1 - alpha, df)
+
+cat("T-Statistic:", t_statistic, "\n")
+cat("Critical T-Value:", t_critical, "\n")
+
+if (t_statistic > t_critical) {
+  cat("Reject the null hypothesis: Schooling is associated with increased life expectancy.\n")
+} else {
+  cat("Fail to reject the null hypothesis: No significant association.\n")
+}
+
+
+estimate <- model_summary$coefficients["Schooling", "Estimate"]
+std_error <- model_summary$coefficients["Schooling", "Std. Error"]
+
+margin_of_error <- t_critical * std_error
+lower_bound <- estimate - margin_of_error
+upper_bound <- estimate + margin_of_error
+
+
+cat("95% Confidence Interval for the Schooling coefficient:", lower_bound, "to", upper_bound, "\n")
+```
+Very strong evidence that for each year of schooling expect life expectancy to increase between 2.26 and 2.38 years.
+
+
 # Linear Regression
+
 
 
 
