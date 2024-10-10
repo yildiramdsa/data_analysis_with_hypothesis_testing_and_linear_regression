@@ -479,7 +479,7 @@ ggplot(life_expectancy_over_time_by_country_type,
        aes(x = Year, y = Life.expectancy, group = Country)) +
   geom_line(color = "grey", size = 1) +
   geom_smooth(aes(group = 1), method = "loess", se = FALSE,
-              color = "#2e6a57", size = 1.2) +
+              color = "#2e6a57", linewidth = 1.2) +
   labs(title = "Trends in Life Expectancy by Country Type (2000-2015)",
        x = "Year", y = "Life Expectancy (Years)") +
   theme_minimal() +
@@ -516,6 +516,8 @@ ggplot(life_exp_comp_dev_dev,
 ```
 
 The boxplot compares the life expectancy between **developed** and **developing** countries. The median life expectancy for developed countries is higher than for developing countries, as indicated by the higher median line within the box. The interquartile range (IQR) for developed countries is narrower, suggesting less variability in life expectancy compared to developing countries. The whiskers extend further for developing countries, indicating a wider range of life expectancy values. Additionally, there are more outliers in the developing countries' data, suggesting the presence of extreme values.
+
+### Health Risk Factors and Mortality Indicators
 
 To visualize the impact of the **Health Risk Factors and Mortality Indicators** on life expectancy,
 
@@ -793,6 +795,8 @@ The correlation between **Measles Cases** and **Life Expectancy** is **-0.19**. 
 
 In summary, immunization coverage for Hepatitis B, Polio, and DTP3 shows positive correlations with life expectancy, indicating that higher immunization rates are associated with higher life expectancy. The number of measles cases has a negative correlation with life expectancy, suggesting that more measles cases are associated with lower life expectancy.
 
+### Healthcare Expenditure and Resource Indicators
+
 To visualize the impact of the **Healthcare Expenditure and Resource Indicators** on life expectancy,
 
 ```{r}
@@ -878,6 +882,8 @@ The correlation between **Total Health Expenditure (%)** and **Life Expectancy**
 The correlation between **Health Expenditure (% of GDP)** and **Life Expectancy** is **0.4**. This shows a moderate positive relationship, meaning that higher health expenditure as a percentage of GDP is associated with higher life expectancy.
 
 In summary, both total health expenditure and health expenditure as a percentage of GDP have positive correlations with life expectancy. This suggests that increased spending on health is associated with higher life expectancy, with health expenditure as a percentage of GDP showing a stronger relationship than total health expenditure.
+
+### Socio-Economic and Educational Indicators
 
 To visualize the impact of the **Socio-Economic and Educational Indicators** on life expectancy,
 
