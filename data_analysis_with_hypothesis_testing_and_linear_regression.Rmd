@@ -1086,7 +1086,7 @@ Our analysis reveals:
 To sum up, our research indicates that GDP is a positively and statistically significant predictor of life expectancy, but it only partially explains the variance in life expectancy between nations. This shows that other social and environmental factors are just as significant for extending life expectancy as money. Additional studies that take a wider range of variables into account may shed additional light on the factors that influence life expectancy.
 
 
-#Hypothesis Testing and Linear Regression for Schooling
+# Hypothesis Testing and Linear Regression for Schooling
 
 Null hypothesis (H0) that there is no relationship between schooling and life expectancy.
 Alternative hypothesis (H1) More schooling leads to higher life expectancy
