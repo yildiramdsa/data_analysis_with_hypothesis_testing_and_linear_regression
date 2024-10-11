@@ -1088,6 +1088,8 @@ To sum up, our research indicates that GDP is a positively and statistically sig
 
 # Hypothesis Testing and Linear Regression for Schooling
 
+There is a linear relationship between Years of Schooling and Life Expectancy (for more details, please see the EDA part for your reference).
+
 Null hypothesis (H0) that there is no relationship between schooling and life expectancy.
 Alternative hypothesis (H1) More schooling leads to higher life expectancy
 ```{r}
@@ -1162,8 +1164,6 @@ We utilize the median value of the country to fill in missing data, except for H
 
 
 ```{r}
-library(dplyr)
-
 raw <- dataset
 
 raw <- raw %>%
@@ -1269,7 +1269,6 @@ summary(model)
 ```{r}
 hist(residuals(model), breaks = 30, main = "Histogram of Residuals",
      xlab = "Residuals", col = "lightblue")
-library(ggplot2)
 
 predictions <- predict(model, newdata = data, interval = "prediction", level = 0.95)
 
