@@ -987,6 +987,105 @@ In summary, HDI and Years of Schooling have strong positive correlations with Li
 # Hypothesis Testing
 
 
+## Hypothesis testing and Linear Regression for the relationship between Gross Domestic Product (GDP) and life expectancy.
+
+Null Hypothesis ($H_{0}$): There is no significant relationship between GDP and life expectancy.
+Alternative Hypothesis ($H_{1}$): There is a significant relationship between GDP and life expectancy.
+
+First, we will check the missing values in the GDP and life expectancy variables and remove the rows with missing values in The GDP or Life Expectancy columns.
+
+```{r}
+data <- dataset
+# Remove rows with missing values in GDP or Life expectancy
+data <- data %>% 
+  filter(!is.na(GDP) & !is.na(Life.expectancy))
+```
+
+# Exploratory Data Analysis
+```{r}
+ggplot(data, aes(x = GDP, y = Life.expectancy)) +
+  geom_point() +
+  labs(title = "Scatter plot of GDP vs Life Expectancy",
+       x = "GDP",
+       y = "Life Expectancy")
+```
+Following Observation can be done from above visualization:
+
+- As GDP increases, life expectancy tends to rise as well. This means that there is a positive correlation between GDP and life expectancy.
+
+- Lower GDP levels (below $25,000) are associated with a dense cluster of countries whose life expectancy varies greatly, mostly between 50 and 80 years.
+
+- For higher GDP levels, the data points are more dispersed but show a consistent increase in life expectancy, approaching 80-90 years.
+
+- A small number of data points, which may be anomalies, show nations with extremely high GDPs (over $100,000) and long life expectancies (above 80 years).
+
+# Correlation Analysis
+```{r}
+cor_test <- cor.test(data$GDP, data$Life.expectancy)
+print(cor_test)
+```
+The Pearson correlation coefficient between GDP and life expectancy = 0.4615
+
+A slightly positive association has been found between GDP and life expectancy, according to the Pearson correlation. This indicates that life expectancy normally tends to increase along with GDP growth.
+
+The null hypothesis can be rejected as the p-value is less than 2.2e-16.
+
+Although GDP and life expectancy are positively correlated, this link may not be perfect.
+
+# Linear Regression
+```{r}
+model <- lm(Life.expectancy ~ GDP, data = data)
+summary(model)
+```
+Coefficient for GDP: 0.0003117
+
+This indicates that life expectancy rises by about 0.00031 years on average for every unit increase in GDP. In real terms, life expectancy rises by 0.3117 years, or around 3.7 months, on average, for every $1,000 increase in GDP.
+
+R-squared: 0.2129
+
+The R-squared value indicates that only 21.29% of the variance in life expectancy can be explained by GDP. This implies that while GDP is a useful predictor of life expectancy, a significant amount of the variation in life expectancy can be explained by factors other than the GDP.
+
+The projected life expectancy at zero GDP, which may not be a realistic scenario, is represented by the intercept value of 67.04 and serves as the model default.
+
+The model's overall statistical significance is also supported by the F-statistic of 671.8 with a p-value < 2.2e-16.
+
+# Hypothesis Testing
+
+From our linear regression results:
+
+- The p-value for GDP is < 2e-16. We reject the null hypothesis since the p-value is substantially smaller than the typical level of significance (e.g., 0.05).
+
+- This means there is strong evidence to suggest that GDP is a statistically significant predictor of life expectancy. In the context of the research question, we conclude that there is a significant positive relationship between a country's GDP and its life expectancy. Therefore, GDP does have an impact on life expectancy, though the relationship explains only about 21.29% of the variance, indicating that other factors also contribute to life expectancy outcomes.
+
+# Model Diagnostics
+
+```{r}
+par(mfrow = c(2, 2))
+plot(model)
+```
+Observations:
+
+- Linearity: No obvious non-linear trend can be seen in the Residuals vs. Fitted plot. Since the majority of the residuals are randomly distributed around the horizontal line (at 0), it appears that the linearity assumption is mostly satisfied. The residuals do, however, marginally diverge at several points, suggesting that the model may contain some modest non-linearity.
+
+- Normality of residuals: The residuals' distribution with respect to a normal distribution is displayed in the Q-Q Residuals plot. The residuals appear to be roughly normally distributed because the majority of the spots are in close proximity to the theoretical line. 
+
+- Homoscedasticity: The spread of the residuals looks to be somewhat stable throughout the fitted value range in the Scale-Location plot. This implies that there is a good deal of satisfaction with the homoscedasticity assumption (constant variance of residuals). There isn't a distinct funnel-shaped pattern that would suggest variation is rising or falling.
+
+- Influential points: Any potentially significant points are highlighted by the Residuals vs. Leverage graphic. None of the points seem to have excessive leverage or residuals that would be regarded as particularly significant, though a couple of points near the plot's right end might be worth looking into more closely. Even while they might not have a big effect on the model as a whole, it could still be beneficial to look at them more.
+
+# Discussion and Conclusion
+
+Our analysis reveals:
+
+- The correlation and regression analyses reveal a substantial association between GDP and life expectancy, as evidenced by the extremely modest p-value (< 2e-16).
+
+- The correlation coefficient of 0.4615 indicates a moderately strong but favourable nature of the association. This indicates that as GDP increases, life expectancy tends to increase as well, though the relationship is not very strong.
+
+- With an R-squared value of 0.2129, the linear regression model explains 21.29% of the variation in life expectancy. Variations in life expectancy are largely caused by a number of different factors, although GDP is one of them
+
+To sum up, our research indicates that GDP is a positively and statistically significant predictor of life expectancy, but it only partially explains the variance in life expectancy between nations. This shows that other social and environmental factors are just as significant for extending life expectancy as money. Additional studies that take a wider range of variables into account may shed additional light on the factors that influence life expectancy.
+
+
 #Hypothesis Testing and Linear Regression for Schooling
 
 Null hypothesis (H0) that there is no relationship between schooling and life expectancy.
