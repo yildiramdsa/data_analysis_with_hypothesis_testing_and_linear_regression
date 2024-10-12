@@ -1122,6 +1122,13 @@ Very low p value, can reject null hypothesis, is a relationship between schoolin
 
 R-squared of 0.6139 suggests that 61.39% of the variance in life expectancy is explained by schooling
 
+
+```{r}
+par(mfrow = c(2, 2))
+plot(model)
+```
+The majority of the residuals in the residuals vs fitted plot are around the horizontal line at 0 satisfying linearity. The residuals also in the Q-Q plot follow a straight line satisfying normality. The spread of the residuals in the residuals vs fitted plot is also randomly scattered suggesting that homoscedasticity is satisfied.
+
 ```{r}
 coef_summary <- summary(model)$coefficients
 t_statistic <- coef_summary["Schooling", "Estimate"] / coef_summary["Schooling", "Std. Error"]
