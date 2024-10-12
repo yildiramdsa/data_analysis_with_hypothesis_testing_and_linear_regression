@@ -991,7 +991,7 @@ In summary, HDI and Years of Schooling have strong positive correlations with Li
 # Hypothesis Testing
 
 
-## Hypothesis testing and Linear Regression for the relationship between Gross Domestic Product (GDP) and life expectancy.
+## Hypothesis Testing and Linear Regression for Gross Domestic Product (GDP) & Life Expectancy
 
 Null Hypothesis ($H_{0}$): There is no significant relationship between GDP and life expectancy.
 Alternative Hypothesis ($H_{1}$): There is a significant relationship between GDP and life expectancy.
@@ -1005,7 +1005,7 @@ data <- data %>%
   filter(!is.na(GDP) & !is.na(Life.expectancy))
 ```
 
-# Exploratory Data Analysis
+### Exploratory Data Analysis
 ```{r}
 ggplot(data, aes(x = GDP, y = Life.expectancy)) +
   geom_point() +
@@ -1023,7 +1023,7 @@ Following Observation can be done from above visualization:
 
 - A small number of data points, which may be anomalies, show nations with extremely high GDPs (over $100,000) and long life expectancies (above 80 years).
 
-# Correlation Analysis
+### Correlation Analysis
 ```{r}
 cor_test <- cor.test(data$GDP, data$Life.expectancy)
 print(cor_test)
@@ -1036,7 +1036,7 @@ The null hypothesis can be rejected as the p-value is less than 2.2e-16.
 
 Although GDP and life expectancy are positively correlated, this link may not be perfect.
 
-# Linear Regression
+### Linear Regression
 ```{r}
 model <- lm(Life.expectancy ~ GDP, data = data)
 summary(model)
@@ -1053,7 +1053,7 @@ The projected life expectancy at zero GDP, which may not be a realistic scenario
 
 The model's overall statistical significance is also supported by the F-statistic of 671.8 with a p-value < 2.2e-16.
 
-# Hypothesis Testing
+### Hypothesis Testing
 
 From our linear regression results:
 
@@ -1061,7 +1061,7 @@ From our linear regression results:
 
 - This means there is strong evidence to suggest that GDP is a statistically significant predictor of life expectancy. In the context of the research question, we conclude that there is a significant positive relationship between a country's GDP and its life expectancy. Therefore, GDP does have an impact on life expectancy, though the relationship explains only about 21.29% of the variance, indicating that other factors also contribute to life expectancy outcomes.
 
-# Model Diagnostics
+### Model Diagnostics
 
 ```{r}
 par(mfrow = c(2, 2))
@@ -1077,7 +1077,7 @@ Observations:
 
 - Influential points: Any potentially significant points are highlighted by the Residuals vs. Leverage graphic. None of the points seem to have excessive leverage or residuals that would be regarded as particularly significant, though a couple of points near the plot's right end might be worth looking into more closely. Even while they might not have a big effect on the model as a whole, it could still be beneficial to look at them more.
 
-# Discussion and Conclusion
+### Discussion and Conclusion
 
 Our analysis reveals:
 
@@ -1090,7 +1090,7 @@ Our analysis reveals:
 To sum up, our research indicates that GDP is a positively and statistically significant predictor of life expectancy, but it only partially explains the variance in life expectancy between nations. This shows that other social and environmental factors are just as significant for extending life expectancy as money. Additional studies that take a wider range of variables into account may shed additional light on the factors that influence life expectancy.
 
 
-# Hypothesis Testing and Linear Regression for Schooling
+## Hypothesis Testing and Linear Regression for Schooling & Life Expectancy
 
 There is a linear relationship between Years of Schooling and Life Expectancy (for more details, please see the EDA part for your reference).
 
@@ -1165,7 +1165,343 @@ cat("95% Confidence Interval for the Schooling coefficient:", lower_bound, "to",
 Very strong evidence that for each year of schooling expect life expectancy to increase between 2.26 and 2.38 years.
 
 
-# Linear Regression
+## Hypothesis Testing and Linear Regression between Status(Developed and Developing Countries) & Life Expectancy.
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(car)
+library(ggplot2)
+```
+
+
+
+### Data Loading and Preparation
+
+```{r data_prep}
+# Load the dataset
+data <- read.csv("life_expectancy_data_raw.csv")
+
+# Filter out rows with missing values in relevant columns
+data_clean <- data %>%
+  filter(!is.na(Status) & !is.na(Life.expectancy) & !is.na(GDP))
+
+# Create binary variable for country status
+data_clean$is_developed <- ifelse(data_clean$Status == "Developed", 1, 0)
+```
+
+### Descriptive Statistics
+
+```{r descriptive}
+# Calculate mean and median life expectancy for each group
+stats <- data_clean %>%
+  group_by(Status) %>%
+  summarize(
+    mean_life_expectancy = mean(Life.expectancy),
+    median_life_expectancy = median(Life.expectancy),
+    n = n()
+  )
+
+print(stats)
+```
+
+### Hypothesis Testing: T-Test
+
+Null Hypothesis (H0): There is no significant difference in life expectancy between developed and developing countries.
+Alternative Hypothesis (H1): There is a significant difference in life expectancy between developed and developing countries.
+
+```{r t_test}
+t_test_result <- t.test(Life.expectancy ~ Status, data = data_clean)
+print(t_test_result)
+```
+
+### Correlation Analysis
+
+```{r correlation}
+cor_test <- cor.test(data_clean$is_developed, data_clean$Life.expectancy)
+print(cor_test)
+```
+
+### Linear Regression
+
+```{r regression}
+model <- lm(Life.expectancy ~ is_developed, data = data_clean)
+summary(model)
+```
+
+### Residual Plot
+
+```{r residual_plot}
+plot(model, which = 1)
+```
+
+### Q-Q Plot
+
+```{r qq_plot}
+plot(model, which = 2)
+```
+
+### ANOVA
+
+```{r anova}
+anova_result <- aov(Life.expectancy ~ Status, data = data_clean)
+summary(anova_result)
+```
+
+### Visualization
+
+```{r boxplot}
+ggplot(data_clean, aes(x = Status, y = Life.expectancy, fill = Status)) +
+  geom_boxplot() +
+  labs(title = "Life Expectancy: Developed vs. Developing Countries",
+       x = "Country Status", y = "Life Expectancy")
+```
+
+### Results and Interpretation
+
+1. **Descriptive Statistics**:
+   - Developed countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developed"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developed"], 2)` years.
+   - Developing countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developing"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developing"], 2)` years.
+
+2. **T-Test**: 
+   The t-test results show a p-value < 0.05, indicating a statistically significant difference in life expectancy between developed and developing countries. The mean difference is approximately `r round(diff(t_test_result$estimate), 2)` years.
+
+3. **Correlation Analysis**:
+   There is a significant positive correlation (r = `r round(cor_test$estimate, 3)`, p < 0.05) between a country's development status and life expectancy.
+
+4. **Linear Regression**:
+   The regression model confirms a significant relationship between country status and life expectancy. Being a developed country is associated with an increase of approximately `r round(coef(model)[2], 2)` years in life expectancy.
+
+5. **ANOVA**:
+   The ANOVA results corroborate the t-test, showing a significant difference between the groups (p < 0.05).
+
+6. **Residual Plot**:
+   The residual plot shows a relatively even spread of residuals around the horizontal line, indicating that the linear model's assumptions of homoscedasticity and linearity are reasonably met. However, there's a slight pattern visible, suggesting that other factors might influence life expectancy or that the relationship might not be perfectly linear.
+
+7. **Q-Q Plot**:
+   The Q-Q plot shows that the residuals generally follow the diagonal line, indicating that they are approximately normally distributed. There are some deviations at the tails, which could suggest the presence of outliers or slight non-normality in the extreme values. This slight deviation doesn't severely violate the normality assumption but indicates that there might be some complexities in the data not captured by the simple linear model.
+
+### Conclusion
+
+Based on multiple statistical analyses, we reject the null hypothesis. There is strong evidence of a significant difference in life expectancy between developed and developing countries. Developed countries tend to have higher life expectancies, with an average difference of about `r round(diff(t_test_result$estimate), 2)` years.
+
+The correlation and regression analyses confirm a positive relationship between development status and life expectancy. However, the residual and Q-Q plots suggest that while our model captures a significant trend, there are likely other factors influencing life expectancy that are not accounted for in this simple analysis.
+
+The boxplot visualization clearly shows the difference in distributions between the two groups, with developed countries having a higher median and smaller spread in life expectancy compared to developing countries.
+
+In conclusion, while development status is a significant predictor of life expectancy, the relationship is complex. Future analyses could explore additional variables and more sophisticated models to better understand the factors influencing life expectancy across different countries.
+
+
+## Hypothesis Testing between Alcohol Consumption & Life expectancy.
+
+
+### Load the Data
+```{r}
+data <- read.csv("life_expectancy_data_raw.csv") 
+```
+### Data Cleaning and Preparation
+
+Remove rows with missing values in Alcohol or Life expectancy.
+```{r}
+data <- data %>%
+  filter(!is.na(Alcohol) & !is.na(Life.expectancy))
+```
+
+### Parameter
+
+In this analysis there are two key parameters:
+
+1.Alcohol Consumption (Numeric):
+
+2.Life Expectancy: 
+
+Statistical Parameters for Hypothesis Testing
+
+Correlation Coefficient (r):
+
+With the help of r, we can measure the strength and relationship between Alcohol Consumption and Life Expectancy.
+
+So, if:
+
+r > 0: Positive correlation (as alcohol consumption increase, life expectancy tends to increase).
+
+r < 0: Negative correlation (as alcohol consumption increases, life expectancy tends to decrease).
+
+r = 0: No correlation.
+
+p-value:
+
+p < 0.05: Reject the null hypothesis (significant correlation).
+
+p >= 0.05: Fail to reject the null hypothesis (no significant correlation).
+
+Hypothesis Type:
+
+Null Hypothesis (H0): $r = 0$ (No significant correlation between alcohol consumption and life expectancy).
+
+Alternative Hypothesis (H1): $r \neq 0$ (There is a significant correlation between alcohol consumption and life expectancy).
+
+
+### Test Method:
+
+Pearson Correlation: If both variables follow a normal distribution.
+
+Pearson Correlation (for normally distributed data):
+
+```{r}
+pearson_test <- cor.test(data$Alcohol, data$Life.expectancy, method = "pearson")
+
+correlation_r <- round(pearson_test$estimate, 3)
+p_value <- round(pearson_test$p.value, 3)
+
+cat("Pearson Correlation Coefficient (r):", correlation_r, "\n")
+cat("p-value:", p_value, "\n")
+```
+
+
+After performing the Pearson correlation analysis, we obtained a correlation coefficient of 0.405 with a p-value of 0.
+
+
+An r value of 0.405 indicates a moderate positive correlation between Alcohol Consumption and Life Expectancy. This suggests that, as alcohol consumption increases, life expectancy tends to also increase, although this relationship is not very strong.
+
+Since the p-value is less than the significance level of 0.05, we reject the null hypothesis.
+
+This suggests that higher alcohol consumption is associated with higher life expectancy in the dataset analyzed.
+
+
+### Exploratory Data Analysis
+
+```{r}
+ggplot(data, aes(x = Alcohol, y = Life.expectancy)) +
+  geom_point(color = "skyblue", size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", color = "red", se = FALSE, linetype = "dashed") + 
+  labs(title = paste("Scatter Plot of Alcohol Consumption vs. Life.expectancy\nCorrelation Coefficient (r):", round(correlation_r, 4)),
+       x = "Alcohol Consumption (liters per capita)",
+       y = "Life.expectancy (deaths per 1,000 adults)") +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Mean
+
+```{r}
+#mean of Alcohol Consumption
+mean_alcohol <- mean(data$Alcohol, na.rm = TRUE) 
+cat("Mean Alcohol Consumption:", round(mean_alcohol, 2), "liters per capita\n")
+
+#mean of Life Expectancy
+mean_life_expectancy <- mean(data$Life.expectancy, na.rm = TRUE)
+cat("Mean Life Expectancy:", round(mean_life_expectancy, 2), "years\n")
+```
+
+Mean Alcohol Consumption: 4.61 liters per capita
+
+Mean Life Expectancy: 69.17 years
+
+The average life expectancy is 69.17 years, suggesting that people in this population tend to live for a long time and are generally healthy
+
+### Median
+
+```{r}
+median_life_expectancy <- median(data$Life.expectancy, na.rm = TRUE)
+
+data <- data %>%
+  mutate(Life_Expectancy_Group = ifelse(Life.expectancy> median_life_expectancy, 
+                                         "Above Median", "Below Median"))
+
+ggplot(data, aes(x = Life_Expectancy_Group, y = Alcohol)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", alpha = 0.7) +
+  labs(title = "Box Plot: Alcohol Consumption by Life Expectancy Group",
+       x = "Life Expectancy Group",
+       y = "Alcohol Consumption (Liters per Capita)") +
+  theme_minimal()
+```
+This will produce a box plot where the x-axis represents the Life Expectancy groups (“Above Median” and “Below Median”), and the y-axis represents alcohol consumption.
+
+Above Median Life Expectancy:
+
+For the group with above median life expectancy, the median alcohol consumption is around 6 liters per capita. The box is more extended, suggesting that there is a wider spread of alcohol consumption within this group. Despite the variability, most of the values fall within a fairly moderate range of alcohol consumption, implying that in regions with higher life expectancy, alcohol consumption is generally moderate.
+
+There are a few extreme outliers, particularly those consuming more than 15 liters per capita. These indicate that even in areas where life expectancy is above the median, some regions or countries have very high levels of alcohol consumption. However, the majority of these regions maintain consumption within a moderate range.
+
+Below Median Life Expectancy:
+
+In contrast, for the group with below median life expectancy, the median alcohol consumption is noticeably lower than that of the group with above median life expectancy. The box plot reveals that this group has more variation and a greater number of outliers, with values extending beyond 10 liters per capita, showing a wider range of alcohol consumption in regions with lower life expectancy.
+
+The presence of more outliers suggests that in areas with lower life expectancy, alcohol consumption levels vary significantly, with some regions exhibiting relatively high consumption, which may be associated with the lower life expectancy. This variation could reflect social, economic, or health factors influencing both alcohol consumption and life expectancy.
+
+
+### linear regression 
+
+```{r}
+model <- lm(Life.expectancy ~ Alcohol, data = data)
+
+coefficients <- coef(model)
+r_squared <- summary(model)$r.squared
+p_value <- summary(model)$coefficients[2, 4]  
+print("Coefficients:")
+print(coefficients)
+print(paste("R-squared:", round(r_squared, 4)))
+print(paste("P-value for Alcohol coefficient:", round(p_value, 4)))
+summary(model)
+```
+1.Regression Coefficients:
+
+The intercept of the model is approximately 64.76. This indicates that when alcohol consumption is zero, the expected life expectancy is about 64.76 years.
+
+The coefficient for alcohol consumption is approximately 0.95. This positive coefficient suggests that for every additional liter of alcohol consumed per capita, life expectancy increases by about 0.95 years. This implies a positive relationship between alcohol consumption and life expectancy in the sample data.
+
+2.Statistical Significance:
+
+The p-value associated with the alcohol coefficient is very small (e.g., < 0.0001). This indicates strong statistical significance, meaning there is a very low probability that the observed relationship between alcohol consumption and life expectancy is due to random chance. Thus, we can conclude that alcohol consumption is significantly related to life expectancy.
+
+3.Model Fit:
+
+The R-squared value of approximately 0.1639 indicates that the model explains about 16.39% of the variability in life expectancy. While this suggests a moderate explanatory power, it also indicates that other factors not included in this model may significantly influence life expectancy.
+
+4.Implications:
+
+Despite the positive relationship suggested by the model, the R-squared value indicates that alcohol consumption alone is not a strong predictor of life expectancy. Other variables may also play a crucial role in determining life expectancy outcomes in the population studied.
+
+### Hypothese testing after linner regression
+
+```{r}
+if (p_value < 0.05) {
+  conclusion <- paste("We reject the null hypothesis. There is a statistically significant relationship between alcohol consumption and life expectancy")
+                      
+} else {
+  conclusion <- paste("We fail to reject the null hypothesis. There is no statistically significant relationship between alcohol consumption and life expectancy")
+}
+print(conclusion)
+```
+
+### Model
+
+```{r}
+par(mar=c(4, 4, 2, 1))
+plot(model)
+```
+
+### Conclusion:
+
+1.Linearity:
+
+Observation: The plot  are distributed symmetrically around the zero line for a large portion of the fitted values. This indicates that the relationship between the predictors and the outcome variable may be adequately captured by the linear model in certain ranges.
+
+2.Normality of residuals:
+
+Observation: The plot shows that the residuals largely follow the 45-degree line in the middle, indicating that the majority of the residuals are normally distributed. However, at both the lower and upper ends (in the tails), there is deviation from the line. Specifically, the points in the upper tail deviate significantly, indicating the presence of outliers or heavy tails, suggesting that the residuals are not perfectly normal, especially in extreme values.
+
+In summary, the residuals mostly follow a normal distribution, but there are deviations in the tails, particularly in the upper tail, where extreme values or outliers are present.
+
+3.Homoscedasticity:
+
+Observation: The Scale-Location plot provides insight into the homoscedasticity of the residuals. The red line remains mostly flat, suggesting that there is no significant trend in the residuals, which would generally indicate homoscedasticity. However, as the fitted values increase, particularly beyond 140, the spread of the residuals becomes wider.
+
+4.Influential points:
+
+Observation: In this plot, a cluster of points is concentrated near zero on both axes, indicating that most points have both low leverage and small residuals, meaning they fit the model well. However, points that are isolated toward the right of the plot (with high leverage) or far above/below the center line (with large residuals) should be examined more closely. 
+
 
 # Multiple Linear Regression
 ## Prepocessing Data
@@ -1176,10 +1512,8 @@ We utilize the median value of the country to fill in missing data, except for H
 
 ```{r}
 raw <- dataset
-
 raw <- raw %>%
-  mutate(across(4:ncol(raw), ~ as.numeric(.)))
-
+mutate(across(4:ncol(raw), ~ as.numeric(.)))
 
 data = raw %>% 
         group_by(Country) %>%  
@@ -1187,7 +1521,7 @@ data = raw %>%
         ungroup() %>%
         mutate(across(4:21, ~ ifelse(is.na(.), median(., na.rm = TRUE), .)))
         
-# Remove group median = Nan
+# Remove group medina = Nan
 data = na.omit(data)
 # Remove Country, Year, GDP, Population 
 data = subset(data, select = -c(Country,Year,Hepatitis.B, GDP, Population) )
@@ -1224,8 +1558,6 @@ Removing Variables with high level of Multicollinearity to keep its interpretabl
 
 
 ```{r}
-# install.packages('car')
-
 model_test <- lm(Life.expectancy ~ ., data=data)
 vif_values <- vif(model_test)
 print(vif_values)
@@ -1249,28 +1581,10 @@ data = subset(data, select = -c(infant.deaths,under.five.deaths) )
 ## Modeling
 
 ### Corelation Observation
-We use Correlation Metrics to find out nonlinear realtionship between Y and X.
-```{r}
-
-par(mfrow = c(3, 5), mar = c(1, 1, 3, 1))
-variable_names <- colnames(data)[colnames(data) != "Life.expectancy"]
-
-for (var in variable_names) {
-  plot(data[[var]], data$Life.expectancy,
-       main = paste(var),
-       xlab = var, 
-       ylab = "Life.expectancy", 
-       col = "steelblue", 
-       pch = 19,
-       cex = 0.5,
-      cex.main = 0.8)
-}
-
-```
-There are variables that exhibit potential nonlinear correlations with Y, specifically Life Expectancy. To address this, we introduce polynomial features and interaction features involving these variables.
+From above parts of EDA, there are variables that exhibit potential nonlinear correlations with Y, specifically Life Expectancy. To address this, we introduce polynomial features and interaction features involving these variables.
 
 
-### 1. Multiple Linear Regression
+### Multiple Linear Regression
 ```{r}
 model <- lm(Life.expectancy ~., data=data)
 summary(model)
@@ -1300,7 +1614,7 @@ This regression analysis evaluates the influence of different factors on the dep
 However, certain variables such as total expenditure and thinness (1-19 years) exhibit weaker significance. Therefore, a decision has been made to exclude these variables.
 
 
-### 2.  Multiple Linear Regression - Remove Non-Significant Variables
+### Multiple Linear Regression - Remove Non-Significant Variables
 ```{r}
 data = subset(data, select = -c(thinness.5.9.years,thinness..1.19.years,Total.expenditure, Alcohol) )
 model_2 <- lm(Life.expectancy ~., data=data)
@@ -1382,346 +1696,6 @@ Intercept (Estimate: 51.96): This value represents the expected life expectancy 
 \
 \
 - Schooling (Estimate: 0.7806): More years of schooling are positively associated with life expectancy. For each additional year of schooling, life expectancy increases by about 0.78 years, emphasizing the importance of education in promoting better health.
-
-
-
-## Hypothesis Testing between Developed and Developing Countries
-
-```{r setup1, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(car)
-library(ggplot2)
-```
-
-
-
-## Data Loading and Preparation
-
-```{r data_prep}
-# Load the dataset
-data <- read.csv("life_expectancy_data_raw.csv")
-
-# Filter out rows with missing values in relevant columns
-data_clean <- data %>%
-  filter(!is.na(Status) & !is.na(Life.expectancy) & !is.na(GDP))
-
-# Create binary variable for country status
-data_clean$is_developed <- ifelse(data_clean$Status == "Developed", 1, 0)
-```
-
-## Descriptive Statistics
-
-```{r descriptive}
-# Calculate mean and median life expectancy for each group
-stats <- data_clean %>%
-  group_by(Status) %>%
-  summarize(
-    mean_life_expectancy = mean(Life.expectancy),
-    median_life_expectancy = median(Life.expectancy),
-    n = n()
-  )
-
-print(stats)
-```
-
-## Hypothesis Testing: T-Test
-
-Null Hypothesis (H0): There is no significant difference in life expectancy between developed and developing countries.
-Alternative Hypothesis (H1): There is a significant difference in life expectancy between developed and developing countries.
-
-```{r t_test}
-t_test_result <- t.test(Life.expectancy ~ Status, data = data_clean)
-print(t_test_result)
-```
-
-## Correlation Analysis
-
-```{r correlation}
-cor_test <- cor.test(data_clean$is_developed, data_clean$Life.expectancy)
-print(cor_test)
-```
-
-## Linear Regression
-
-```{r regression}
-model <- lm(Life.expectancy ~ is_developed, data = data_clean)
-summary(model)
-```
-
-## Residual Plot
-
-```{r residual_plot}
-plot(model, which = 1)
-```
-
-## Q-Q Plot
-
-```{r qq_plot}
-plot(model, which = 2)
-```
-
-## ANOVA
-
-```{r anova}
-anova_result <- aov(Life.expectancy ~ Status, data = data_clean)
-summary(anova_result)
-```
-
-## Visualization
-
-```{r boxplot}
-ggplot(data_clean, aes(x = Status, y = Life.expectancy, fill = Status)) +
-  geom_boxplot() +
-  labs(title = "Life Expectancy: Developed vs. Developing Countries",
-       x = "Country Status", y = "Life Expectancy")
-```
-
-## Results and Interpretation
-
-1. **Descriptive Statistics**:
-   - Developed countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developed"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developed"], 2)` years.
-   - Developing countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developing"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developing"], 2)` years.
-
-2. **T-Test**: 
-   The t-test results show a p-value < 0.05, indicating a statistically significant difference in life expectancy between developed and developing countries. The mean difference is approximately `r round(diff(t_test_result$estimate), 2)` years.
-
-3. **Correlation Analysis**:
-   There is a significant positive correlation (r = `r round(cor_test$estimate, 3)`, p < 0.05) between a country's development status and life expectancy.
-
-4. **Linear Regression**:
-   The regression model confirms a significant relationship between country status and life expectancy. Being a developed country is associated with an increase of approximately `r round(coef(model)[2], 2)` years in life expectancy.
-
-5. **ANOVA**:
-   The ANOVA results corroborate the t-test, showing a significant difference between the groups (p < 0.05).
-
-6. **Residual Plot**:
-   The residual plot shows a relatively even spread of residuals around the horizontal line, indicating that the linear model's assumptions of homoscedasticity and linearity are reasonably met. However, there's a slight pattern visible, suggesting that other factors might influence life expectancy or that the relationship might not be perfectly linear.
-
-7. **Q-Q Plot**:
-   The Q-Q plot shows that the residuals generally follow the diagonal line, indicating that they are approximately normally distributed. There are some deviations at the tails, which could suggest the presence of outliers or slight non-normality in the extreme values. This slight deviation doesn't severely violate the normality assumption but indicates that there might be some complexities in the data not captured by the simple linear model.
-
-## Conclusion
-
-Based on multiple statistical analyses, we reject the null hypothesis. There is strong evidence of a significant difference in life expectancy between developed and developing countries. Developed countries tend to have higher life expectancies, with an average difference of about `r round(diff(t_test_result$estimate), 2)` years.
-
-The correlation and regression analyses confirm a positive relationship between development status and life expectancy. However, the residual and Q-Q plots suggest that while our model captures a significant trend, there are likely other factors influencing life expectancy that are not accounted for in this simple analysis.
-
-The boxplot visualization clearly shows the difference in distributions between the two groups, with developed countries having a higher median and smaller spread in life expectancy compared to developing countries.
-
-In conclusion, while development status is a significant predictor of life expectancy, the relationship is complex. Future analyses could explore additional variables and more sophisticated models to better understand the factors influencing life expectancy across different countries.
-
-
-## Hypothesis test between Alcohol consumption and Life expectancy.
-
-
-## Load the Data
-```{r}
-data <- read.csv("life_expectancy_data_raw.csv") 
-```
-## Data Cleaning and Preparation
-
-## Remove rows with missing values in Alcohol or Life expectancy.
-```{r}
-data <- data %>%
-  filter(!is.na(Alcohol) & !is.na(Life.expectancy))
-```
-
-## Parameter
-
-In this analysis there are two key parameters:
-
-1.Alcohol Consumption (Numeric):
-
-2.Life Expectancy: 
-
-Statistical Parameters for Hypothesis Testing
-
-Correlation Coefficient (r):
-
-With the help of r, we can measure the strength and relationship between Alcohol Consumption and Life Expectancy.
-
-So, if:
-
-r > 0: Positive correlation (as alcohol consumption increase, life expectancy tends to increase).
-
-r < 0: Negative correlation (as alcohol consumption increases, life expectancy tends to decrease).
-
-r = 0: No correlation.
-
-p-value:
-
-p < 0.05: Reject the null hypothesis (significant correlation).
-
-p >= 0.05: Fail to reject the null hypothesis (no significant correlation).
-
-Hypothesis Type:
-
-Null Hypothesis (H0): r = 0 (No significant correlation between alcohol consumption and life expectancy).
-
-Alternative Hypothesis (H1): r ≠ 0 (There is a significant correlation between alcohol consumption and life expectancy).
-
-
-## Test Method:
-
-Pearson Correlation: If both variables follow a normal distribution.
-
-Pearson Correlation (for normally distributed data):
-
-```{r}
-pearson_test <- cor.test(data$Alcohol, data$Life.expectancy, method = "pearson")
-
-correlation_r <- round(pearson_test$estimate, 3)
-p_value <- round(pearson_test$p.value, 3)
-
-cat("Pearson Correlation Coefficient (r):", correlation_r, "\n")
-cat("p-value:", p_value, "\n")
-```
-
-
-After performing the Pearson correlation analysis, we obtained a correlation coefficient of 0.405 with a p-value of 0.
-
-
-An r value of 0.405 indicates a moderate positive correlation between Alcohol Consumption and Life Expectancy. This suggests that, as alcohol consumption increases, life expectancy tends to also increase, although this relationship is not very strong.
-
-Since the p-value is less than the significance level of 0.05, we reject the null hypothesis.
-
-This suggests that higher alcohol consumption is associated with higher life expectancy in the dataset analyzed.
-
-
-## Exploratory Data Analysis
-
-```{r}
-ggplot(data, aes(x = Alcohol, y = Life.expectancy)) +
-  geom_point(color = "skyblue", size = 2, alpha = 0.7) +
-  geom_smooth(method = "lm", color = "red", se = FALSE, linetype = "dashed") + 
-  labs(title = paste("Scatter Plot of Alcohol Consumption vs. Life.expectancy\nCorrelation Coefficient (r):", round(correlation_r, 4)),
-       x = "Alcohol Consumption (liters per capita)",
-       y = "Life.expectancy (deaths per 1,000 adults)") +
-  theme_minimal()+
-  theme(plot.title = element_text(hjust = 0.5))
-```
-
-## Mean
-
-```{r}
-#mean of Alcohol Consumption
-mean_alcohol <- mean(data$Alcohol, na.rm = TRUE) 
-cat("Mean Alcohol Consumption:", round(mean_alcohol, 2), "liters per capita\n")
-
-#mean of Life Expectancy
-mean_life_expectancy <- mean(data$Life.expectancy, na.rm = TRUE)
-cat("Mean Life Expectancy:", round(mean_life_expectancy, 2), "years\n")
-```
-
-Mean Alcohol Consumption: 4.61 liters per capita
-
-Mean Life Expectancy: 69.17 years
-
-The average life expectancy is 69.17 years, suggesting that people in this population tend to live for a long time and are generally healthy
-
-## Median
-
-```{r}
-median_life_expectancy <- median(data$Life.expectancy, na.rm = TRUE)
-
-data <- data %>%
-  mutate(Life_Expectancy_Group = ifelse(Life.expectancy> median_life_expectancy, 
-                                         "Above Median", "Below Median"))
-
-ggplot(data, aes(x = Life_Expectancy_Group, y = Alcohol)) +
-  geom_boxplot(fill = "lightblue", color = "darkblue", alpha = 0.7) +
-  labs(title = "Box Plot: Alcohol Consumption by Life Expectancy Group",
-       x = "Life Expectancy Group",
-       y = "Alcohol Consumption (Liters per Capita)") +
-  theme_minimal()
-```
-This will produce a box plot where the x-axis represents the Life Expectancy groups (“Above Median” and “Below Median”), and the y-axis represents alcohol consumption.
-
-Above Median Life Expectancy:
-
-For the group with above median life expectancy, the median alcohol consumption is around 6 liters per capita. The box is more extended, suggesting that there is a wider spread of alcohol consumption within this group. Despite the variability, most of the values fall within a fairly moderate range of alcohol consumption, implying that in regions with higher life expectancy, alcohol consumption is generally moderate.
-
-There are a few extreme outliers, particularly those consuming more than 15 liters per capita. These indicate that even in areas where life expectancy is above the median, some regions or countries have very high levels of alcohol consumption. However, the majority of these regions maintain consumption within a moderate range.
-
-Below Median Life Expectancy:
-
-In contrast, for the group with below median life expectancy, the median alcohol consumption is noticeably lower than that of the group with above median life expectancy. The box plot reveals that this group has more variation and a greater number of outliers, with values extending beyond 10 liters per capita, showing a wider range of alcohol consumption in regions with lower life expectancy.
-
-The presence of more outliers suggests that in areas with lower life expectancy, alcohol consumption levels vary significantly, with some regions exhibiting relatively high consumption, which may be associated with the lower life expectancy. This variation could reflect social, economic, or health factors influencing both alcohol consumption and life expectancy.
-
-
-## linear regration 
-
-```{r}
-model <- lm(Life.expectancy ~ Alcohol, data = data)
-
-coefficients <- coef(model)
-r_squared <- summary(model)$r.squared
-p_value <- summary(model)$coefficients[2, 4]  
-print("Coefficients:")
-print(coefficients)
-print(paste("R-squared:", round(r_squared, 4)))
-print(paste("P-value for Alcohol coefficient:", round(p_value, 4)))
-summary(model)
-```
-1.Regression Coefficients:
-
-The intercept of the model is approximately 64.76. This indicates that when alcohol consumption is zero, the expected life expectancy is about 64.76 years.
-
-The coefficient for alcohol consumption is approximately 0.95. This positive coefficient suggests that for every additional liter of alcohol consumed per capita, life expectancy increases by about 0.95 years. This implies a positive relationship between alcohol consumption and life expectancy in the sample data.
-
-2.Statistical Significance:
-
-The p-value associated with the alcohol coefficient is very small (e.g., < 0.0001). This indicates strong statistical significance, meaning there is a very low probability that the observed relationship between alcohol consumption and life expectancy is due to random chance. Thus, we can conclude that alcohol consumption is significantly related to life expectancy.
-
-3.Model Fit:
-
-The R-squared value of approximately 0.1639 indicates that the model explains about 16.39% of the variability in life expectancy. While this suggests a moderate explanatory power, it also indicates that other factors not included in this model may significantly influence life expectancy.
-
-4.Implications:
-
-Despite the positive relationship suggested by the model, the R-squared value indicates that alcohol consumption alone is not a strong predictor of life expectancy. Other variables may also play a crucial role in determining life expectancy outcomes in the population studied.
-
-## Hypothese testing after linner regression
-
-```{r}
-if (p_value < 0.05) {
-  conclusion <- paste("We reject the null hypothesis. There is a statistically significant relationship between alcohol consumption and life expectancy")
-                      
-} else {
-  conclusion <- paste("We fail to reject the null hypothesis. There is no statistically significant relationship between alcohol consumption and life expectancy")
-}
-print(conclusion)
-```
-
-## Model
-
-```{r}
-par(mar=c(4, 4, 2, 1))
-plot(model)
-```
-
-## Conclusion:
-
-1.Linearity:
-
-Observation: The plot  are distributed symmetrically around the zero line for a large portion of the fitted values. This indicates that the relationship between the predictors and the outcome variable may be adequately captured by the linear model in certain ranges.
-
-2.Normality of residuals:
-
-Observation: The plot shows that the residuals largely follow the 45-degree line in the middle, indicating that the majority of the residuals are normally distributed. However, at both the lower and upper ends (in the tails), there is deviation from the line. Specifically, the points in the upper tail deviate significantly, indicating the presence of outliers or heavy tails, suggesting that the residuals are not perfectly normal, especially in extreme values.
-
-In summary, the residuals mostly follow a normal distribution, but there are deviations in the tails, particularly in the upper tail, where extreme values or outliers are present.
-
-3.Homoscedasticity:
-
-Observation: The Scale-Location plot provides insight into the homoscedasticity of the residuals. The red line remains mostly flat, suggesting that there is no significant trend in the residuals, which would generally indicate homoscedasticity. However, as the fitted values increase, particularly beyond 140, the spread of the residuals becomes wider.
-
-4.Influential points:
-
-Observation: In this plot, a cluster of points is concentrated near zero on both axes, indicating that most points have both low leverage and small residuals, meaning they fit the model well. However, points that are isolated toward the right of the plot (with high leverage) or far above/below the center line (with large residuals) should be examined more closely. 
-
 
 
 
