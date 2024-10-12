@@ -1381,6 +1381,134 @@ Intercept (Estimate: 51.96): This value represents the expected life expectancy 
 
 
 
+## Hypothesis Testing between Developed and Developing Countries
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(car)
+library(ggplot2)
+```
+
+
+
+## Data Loading and Preparation
+
+```{r data_prep}
+# Load the dataset
+data <- read.csv("life_expectancy_data_raw.csv")
+
+# Filter out rows with missing values in relevant columns
+data_clean <- data %>%
+  filter(!is.na(Status) & !is.na(Life.expectancy) & !is.na(GDP))
+
+# Create binary variable for country status
+data_clean$is_developed <- ifelse(data_clean$Status == "Developed", 1, 0)
+```
+
+## Descriptive Statistics
+
+```{r descriptive}
+# Calculate mean and median life expectancy for each group
+stats <- data_clean %>%
+  group_by(Status) %>%
+  summarize(
+    mean_life_expectancy = mean(Life.expectancy),
+    median_life_expectancy = median(Life.expectancy),
+    n = n()
+  )
+
+print(stats)
+```
+
+## Hypothesis Testing: T-Test
+
+Null Hypothesis (H0): There is no significant difference in life expectancy between developed and developing countries.
+Alternative Hypothesis (H1): There is a significant difference in life expectancy between developed and developing countries.
+
+```{r t_test}
+t_test_result <- t.test(Life.expectancy ~ Status, data = data_clean)
+print(t_test_result)
+```
+
+## Correlation Analysis
+
+```{r correlation}
+cor_test <- cor.test(data_clean$is_developed, data_clean$Life.expectancy)
+print(cor_test)
+```
+
+## Linear Regression
+
+```{r regression}
+model <- lm(Life.expectancy ~ is_developed, data = data_clean)
+summary(model)
+```
+
+## Residual Plot
+
+```{r residual_plot}
+plot(model, which = 1)
+```
+
+## Q-Q Plot
+
+```{r qq_plot}
+plot(model, which = 2)
+```
+
+## ANOVA
+
+```{r anova}
+anova_result <- aov(Life.expectancy ~ Status, data = data_clean)
+summary(anova_result)
+```
+
+## Visualization
+
+```{r boxplot}
+ggplot(data_clean, aes(x = Status, y = Life.expectancy, fill = Status)) +
+  geom_boxplot() +
+  labs(title = "Life Expectancy: Developed vs. Developing Countries",
+       x = "Country Status", y = "Life Expectancy")
+```
+
+## Results and Interpretation
+
+1. **Descriptive Statistics**:
+   - Developed countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developed"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developed"], 2)` years.
+   - Developing countries have a mean life expectancy of `r round(stats$mean_life_expectancy[stats$Status == "Developing"], 2)` years and a median of `r round(stats$median_life_expectancy[stats$Status == "Developing"], 2)` years.
+
+2. **T-Test**: 
+   The t-test results show a p-value < 0.05, indicating a statistically significant difference in life expectancy between developed and developing countries. The mean difference is approximately `r round(diff(t_test_result$estimate), 2)` years.
+
+3. **Correlation Analysis**:
+   There is a significant positive correlation (r = `r round(cor_test$estimate, 3)`, p < 0.05) between a country's development status and life expectancy.
+
+4. **Linear Regression**:
+   The regression model confirms a significant relationship between country status and life expectancy. Being a developed country is associated with an increase of approximately `r round(coef(model)[2], 2)` years in life expectancy.
+
+5. **ANOVA**:
+   The ANOVA results corroborate the t-test, showing a significant difference between the groups (p < 0.05).
+
+6. **Residual Plot**:
+   The residual plot shows a relatively even spread of residuals around the horizontal line, indicating that the linear model's assumptions of homoscedasticity and linearity are reasonably met. However, there's a slight pattern visible, suggesting that other factors might influence life expectancy or that the relationship might not be perfectly linear.
+
+7. **Q-Q Plot**:
+   The Q-Q plot shows that the residuals generally follow the diagonal line, indicating that they are approximately normally distributed. There are some deviations at the tails, which could suggest the presence of outliers or slight non-normality in the extreme values. This slight deviation doesn't severely violate the normality assumption but indicates that there might be some complexities in the data not captured by the simple linear model.
+
+## Conclusion
+
+Based on multiple statistical analyses, we reject the null hypothesis. There is strong evidence of a significant difference in life expectancy between developed and developing countries. Developed countries tend to have higher life expectancies, with an average difference of about `r round(diff(t_test_result$estimate), 2)` years.
+
+The correlation and regression analyses confirm a positive relationship between development status and life expectancy. However, the residual and Q-Q plots suggest that while our model captures a significant trend, there are likely other factors influencing life expectancy that are not accounted for in this simple analysis.
+
+The boxplot visualization clearly shows the difference in distributions between the two groups, with developed countries having a higher median and smaller spread in life expectancy compared to developing countries.
+
+In conclusion, while development status is a significant predictor of life expectancy, the relationship is complex. Future analyses could explore additional variables and more sophisticated models to better understand the factors influencing life expectancy across different countries.
+
+
+
 
 
 
