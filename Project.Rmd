@@ -1,5 +1,5 @@
 ---
-title: "Project - Alcohol vs Adult Mortality"
+title: "Project - Alcohol vs Life expectancy"
 author: "Utsav Goti"
 date: "`r Sys.Date()`"
 output:
@@ -16,7 +16,7 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Correlation test between Alcohol consumption and Adult Mortality
+## Correlation test between Alcohol consumption and Life expectancy.
 
 ## library
 ```{r}
@@ -31,142 +31,140 @@ data <- read.csv("life_expectancy_data_raw.csv")
 ```
 ## Data Cleaning and Preparation
 
-## Remove rows with missing values in Alcohol or Adult Mortality
+## Remove rows with missing values in Alcohol or Life expectancy.
 ```{r}
 data <- data %>%
-  filter(!is.na(Alcohol) & !is.na(Adult_Mortality))
+  filter(!is.na(Alcohol) & !is.na(Life.expectancy))
 ```
 
 ## Parameter
 
-In this analysis there are two key parameters
+In this analysis there are two key parameters:
 
-1.Alcohol Consumption(Numeric):
+1.Alcohol Consumption (Numeric):
 
-2.Adult Mortality(Numeric):
+2.Life Expectancy: 
 
-## Statistical Parameters for Hypothesis Testing
+Statistical Parameters for Hypothesis Testing
 
 Correlation Coefficient (r):
 
-With the help of r we can messure the strenght and relationship between Alcohol and Adult Mortality.
+With the help of r, we can measure the strength and relationship between Alcohol Consumption and Life Expectancy.
 
-So, if
+So, if:
 
-r > 0: Positive correlation (as alcohol consumption increases, adult mortality tends to increase).
+r > 0: Positive correlation (as alcohol consumption increase, life expectancy tends to increase).
 
-r < 0: Negative correlation (as alcohol consumption increases, adult mortality tends to decrease).
+r < 0: Negative correlation (as alcohol consumption increases, life expectancy tends to decrease).
 
 r = 0: No correlation.
 
-p-value
+p-value:
 
 p < 0.05: Reject the null hypothesis (significant correlation).
 
 p >= 0.05: Fail to reject the null hypothesis (no significant correlation).
 
-## Hypothesis Type:
+Hypothesis Type:
 
-Null Hypothesis (H0): r = 0 (No significant correlation between alcohol consumption and adult mortality).
+Null Hypothesis (H0): r = 0 (No significant correlation between alcohol consumption and life expectancy).
 
-Alternative Hypothesis (H1): r ≠ 0 (There is a significant correlation between alcohol consumption and adult mortality).
+Alternative Hypothesis (H1): r ≠ 0 (There is a significant correlation between alcohol consumption and life expectancy).
+
 
 ## Test Method:
 
 Pearson Correlation: If both variables follow a normal distribution.
 
 Pearson Correlation (for normally distributed data):
+
 ```{r}
-data$`Adult_Mortality` <- as.numeric(as.character(data$`Adult_Mortality`))
+pearson_test <- cor.test(data$Alcohol, data$Life.expectancy, method = "pearson")
 
-# Remove rows with NA values in either Alcohol or Adult Mortality
-clean_data <- data[!is.na(data$Alcohol) & !is.na(data$`Adult_Mortality`), ]
-
-# Perform Pearson correlation test on the cleaned data
-pearson_test <- cor.test(clean_data$Alcohol, clean_data$`Adult_Mortality`, method = "pearson")
-
-# Round the results
 correlation_r <- round(pearson_test$estimate, 3)
 p_value <- round(pearson_test$p.value, 3)
 
-# Display results
 cat("Pearson Correlation Coefficient (r):", correlation_r, "\n")
 cat("p-value:", p_value, "\n")
 ```
 
-After performing the Pearson correlation analysis, we obtained a correlation coefficient of -0.196 with a p-value of 0. 
 
-So, the p-value is less than the significance level of 0.05, we reject the null hypothesis.
+After performing the Pearson correlation analysis, we obtained a correlation coefficient of 0.405 with a p-value of 0.
 
-Also the value of r(-0.196), so there is a statistically significant negative linear correlation between alcohol consumption and adult mortality. 
 
-This suggests that higher alcohol consumption is associated with lower adult mortality rates in the dataset analyzed.
+An r value of 0.405 indicates a moderate positive correlation between Alcohol Consumption and Life Expectancy. This suggests that, as alcohol consumption increases, life expectancy tends to also increase, although this relationship is not very strong.
+
+Since the p-value is less than the significance level of 0.05, we reject the null hypothesis.
+
+This suggests that higher alcohol consumption is associated with higher life expectancy in the dataset analyzed.
 
 
 ## Exploratory Data Analysis
 
 ```{r}
-ggplot(data, aes(x = Alcohol, y = Adult_Mortality)) +
+ggplot(data, aes(x = Alcohol, y = Life.expectancy)) +
   geom_point(color = "skyblue", size = 2, alpha = 0.7) +
   geom_smooth(method = "lm", color = "red", se = FALSE, linetype = "dashed") + 
-  labs(title = paste("Scatter Plot of Alcohol Consumption vs. Adult_Mortality\nCorrelation Coefficient (r):", round(correlation_r, 4)),
+  labs(title = paste("Scatter Plot of Alcohol Consumption vs. Life.expectancy\nCorrelation Coefficient (r):", round(correlation_r, 4)),
        x = "Alcohol Consumption (liters per capita)",
-       y = "Adult_Mortality (deaths per 1,000 adults)") +
+       y = "Life.expectancy (deaths per 1,000 adults)") +
   theme_minimal()+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-## mean
+## Mean
 
 ```{r}
-# Calculate the mean for Alcohol Consumption
-mean_alcohol <- mean(data$Alcohol, na.rm = TRUE)  # Use na.rm = TRUE to ignore NA values
+#mean of Alcohol Consumption
+mean_alcohol <- mean(data$Alcohol, na.rm = TRUE) 
 cat("Mean Alcohol Consumption:", round(mean_alcohol, 2), "liters per capita\n")
 
-# Calculate the mean for Adult Mortality
-mean_mortality <- mean(data$Adult_Mortality, na.rm = TRUE)  # Use na.rm = TRUE to ignore NA values
-cat("Mean Adult Mortality:", round(mean_mortality, 2), "deaths per 1,000 adults\n")
+#mean of Life Expectancy
+mean_life_expectancy <- mean(data$Life.expectancy, na.rm = TRUE)
+cat("Mean Life Expectancy:", round(mean_life_expectancy, 2), "years\n")
 ```
 
 Mean Alcohol Consumption: 4.61 liters per capita
 
-Mean Adult Mortality: 164.46 deaths per 1,000 adults
+Mean Life Expectancy: 69.17 years
 
-So, the mean alcohol consumption level could be associated with health risks, while the adult mortality rate is a crucial indicator of overall population health and well-being. 
+The average life expectancy is 69.17 years, suggesting that people in this population tend to live for a long time and are generally healthy
 
-## median
+## Median
 
 ```{r}
-median_mortality <- median(data$Adult_Mortality, na.rm = TRUE)
+median_life_expectancy <- median(data$Life.expectancy, na.rm = TRUE)
+
 data <- data %>%
-  mutate(Mortality_Group = ifelse(Adult_Mortality > median_mortality, 
-                                   "Above Median", "Below Median"))
-# Create the box plot
-ggplot(data, aes(x = Mortality_Group, y = Alcohol)) +
+  mutate(Life_Expectancy_Group = ifelse(Life.expectancy> median_life_expectancy, 
+                                         "Above Median", "Below Median"))
+
+ggplot(data, aes(x = Life_Expectancy_Group, y = Alcohol)) +
   geom_boxplot(fill = "lightblue", color = "darkblue", alpha = 0.7) +
-  labs(title = "Box Plot: Alcohol Consumption by Mortality Group",
-       x = "Mortality Group",
+  labs(title = "Box Plot: Alcohol Consumption by Life Expectancy Group",
+       x = "Life Expectancy Group",
        y = "Alcohol Consumption (Liters per Capita)") +
   theme_minimal()
 ```
-This will produce a box plot where the x-axis represents the mortality groups (“Above Median” and “Below Median”), and the y-axis represents alcohol consumption.
+This will produce a box plot where the x-axis represents the Life Expectancy groups (“Above Median” and “Below Median”), and the y-axis represents alcohol consumption.
 
-Above Median Adult Mortality:
+Above Median Life Expectancy:
 
-For the group with above median adult mortality, the median alcohol consumption is around 4–5 liters per capita. The box itself is relatively compact, suggesting that the majority of the data is concentrated around a similar range of alcohol consumption.
+For the group with above median life expectancy, the median alcohol consumption is around 6 liters per capita. The box is more extended, suggesting that there is a wider spread of alcohol consumption within this group. Despite the variability, most of the values fall within a fairly moderate range of alcohol consumption, implying that in regions with higher life expectancy, alcohol consumption is generally moderate.
 
-There are a few outliers above the 15 liters per capita mark, indicating some cases where alcohol consumption is significantly higher in regions or countries with above-median adult mortality. These outliers suggest that in some areas with high adult mortality, alcohol consumption is exceptionally high, potentially influencing mortality rates.
+There are a few extreme outliers, particularly those consuming more than 15 liters per capita. These indicate that even in areas where life expectancy is above the median, some regions or countries have very high levels of alcohol consumption. However, the majority of these regions maintain consumption within a moderate range.
 
-Below Median Adult Mortality:
+Below Median Life Expectancy:
 
-For the group with below median adult mortality, the median alcohol consumption appears to be higher than the group with above median mortality. The range (IQR) is broader, indicating greater variation in alcohol consumption among areas with lower adult mortality.
+In contrast, for the group with below median life expectancy, the median alcohol consumption is noticeably lower than that of the group with above median life expectancy. The box plot reveals that this group has more variation and a greater number of outliers, with values extending beyond 10 liters per capita, showing a wider range of alcohol consumption in regions with lower life expectancy.
 
-This group does not have the same extreme outliers as the other group, suggesting that alcohol consumption is more consistent in areas with lower adult mortality.
+The presence of more outliers suggests that in areas with lower life expectancy, alcohol consumption levels vary significantly, with some regions exhibiting relatively high consumption, which may be associated with the lower life expectancy. This variation could reflect social, economic, or health factors influencing both alcohol consumption and life expectancy.
+
 
 ## linear regration 
 
 ```{r}
-model <- lm(Adult_Mortality ~ Alcohol, data = data)
+model <- lm(Life.expectancy ~ Alcohol, data = data)
 
 coefficients <- coef(model)
 r_squared <- summary(model)$r.squared
@@ -178,48 +176,47 @@ print(paste("P-value for Alcohol coefficient:", round(p_value, 4)))
 summary(model)
 ```
 1.Regression Coefficients:
-	
-The intercept of the model is approximately 200.00. This indicates that when alcohol consumption is zero, the expected adult mortality rate is about 200 deaths per 1,000 adults.
 
-The coefficient for alcohol consumption is approximately -6.06. This negative coefficient suggests that for every additional liter of alcohol consumed per capita, the adult mortality rate decreases by about 6.06 deaths per 1,000 adults. This implies a negative relationship between alcohol consumption and adult mortality in the sample data.
+The intercept of the model is approximately 64.76. This indicates that when alcohol consumption is zero, the expected life expectancy is about 64.76 years.
+
+The coefficient for alcohol consumption is approximately 0.95. This positive coefficient suggests that for every additional liter of alcohol consumed per capita, life expectancy increases by about 0.95 years. This implies a positive relationship between alcohol consumption and life expectancy in the sample data.
 
 2.Statistical Significance:
 
-The p-value associated with the alcohol coefficient is very small (e.g., < 0.0001). This indicates strong statistical significance, meaning that there is a very low probability that the observed relationship between alcohol consumption and adult mortality is due to random chance. Thus, we can conclude that alcohol consumption is significantly related to adult mortality.
-	
-3.	Model Fit:
+The p-value associated with the alcohol coefficient is very small (e.g., < 0.0001). This indicates strong statistical significance, meaning there is a very low probability that the observed relationship between alcohol consumption and life expectancy is due to random chance. Thus, we can conclude that alcohol consumption is significantly related to life expectancy.
 
-The R-squared value of approximately 0.038 indicates that the model explains about 3.8% of the variability in adult mortality. While this suggests a weak explanatory power, it also indicates that other factors not included in this model may significantly influence adult mortality.
+3.Model Fit:
 
-4.	Implications:
+The R-squared value of approximately 0.1639 indicates that the model explains about 16.39% of the variability in life expectancy. While this suggests a moderate explanatory power, it also indicates that other factors not included in this model may significantly influence life expectancy.
 
-Despite the negative relationship suggested by the model, the low R-squared value indicates that alcohol consumption alone is not a strong predictor of adult mortality. Public health policies and further research should consider a range of factors, including socioeconomic con
+4.Implications:
 
+Despite the positive relationship suggested by the model, the R-squared value indicates that alcohol consumption alone is not a strong predictor of life expectancy. Other variables may also play a crucial role in determining life expectancy outcomes in the population studied.
 
 ## Hypothese testing after linner regression
 
 ```{r}
 if (p_value < 0.05) {
-  conclusion <- paste("We reject the null hypothesis. There is a statistically significant relationship between alcohol consumption and adult mortality")
+  conclusion <- paste("We reject the null hypothesis. There is a statistically significant relationship between alcohol consumption and life expectancy")
                       
-  } else {
-    conclusion <- paste("We fail to reject the null hypothesis. There is no statisticallly significant relationship between alcohol consumption and adult mortality")
+} else {
+  conclusion <- paste("We fail to reject the null hypothesis. There is no statistically significant relationship between alcohol consumption and life expectancy")
 }
 print(conclusion)
 ```
 
-
-# model
+## Model
 
 ```{r}
 par(mar=c(4, 4, 2, 1))
 plot(model)
 ```
-Conclusion:
+
+## Conclusion:
 
 1.Linearity:
 
-Observation: he plot shows some linearity, but there is increasing spread (heteroscedasticity) as fitted values rise, especially beyond 140. There are also a few outliers.
+Observation: The plot  are distributed symmetrically around the zero line for a large portion of the fitted values. This indicates that the relationship between the predictors and the outcome variable may be adequately captured by the linear model in certain ranges.
 
 2.Normality of residuals:
 
@@ -233,4 +230,4 @@ Observation: The Scale-Location plot provides insight into the homoscedasticity 
 
 4.Influential points:
 
-Observation: In this plot, a cluster of points is concentrated near zero on both axes, indicating that most points have both low leverage and small residuals, meaning they fit the model well. However, points that are isolated toward the right of the plot (with high leverage) or far above/below the centerline (with large residuals) should be examined more closely. 
+Observation: In this plot, a cluster of points is concentrated near zero on both axes, indicating that most points have both low leverage and small residuals, meaning they fit the model well. However, points that are isolated toward the right of the plot (with high leverage) or far above/below the center line (with large residuals) should be examined more closely. 
