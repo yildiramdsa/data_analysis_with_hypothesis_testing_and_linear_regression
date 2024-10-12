@@ -1,5 +1,5 @@
 ---
-title: "Data Analysis with Hypothesis Testing and Linear Regression: Exploring Factors Affecting Life Expectancy"
+title: "Exploring Life Expectancy: A Data Analysis Using Hypothesis Testing and Linear Regression"
 author: "..., Alina Yildir, ..."
 date: "2024-09-30"
 output: pdf_document
