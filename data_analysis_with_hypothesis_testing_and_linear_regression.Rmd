@@ -1,6 +1,6 @@
 ---
 title: "Exploring Life Expectancy: A Data Analysis Using Hypothesis Testing and Linear Regression"
-author: "..., Alina Yildir, Paul Lin, Adam Virani, Vineet Patel, Utsav Goti, Dhruv Patel ..."
+author: "Alina Yildir, Paul Lin, Adam Virani, Vineet Patel, Utsav Goti, Dhruv Patel"
 date: "2024-09-30"
 output: pdf_document
 ---
