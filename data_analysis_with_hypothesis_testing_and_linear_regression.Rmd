@@ -1096,11 +1096,18 @@ There is a linear relationship between Years of Schooling and Life Expectancy (f
 
 Null hypothesis (H0) that there is no relationship between schooling and life expectancy.
 Alternative hypothesis (H1) More schooling leads to higher life expectancy
+
+### Data Loading and Preparation
 ```{r}
-data1_filtered <- dataset[dataset$Schooling != 0, ]
-data1_filtered <- data1_filtered[!(data1_filtered$Schooling == 0 | data1_filtered$Schooling == "" | is.na(data1_filtered$Schooling) | data1_filtered$`Life.expectancy` == 0 | data1_filtered$`Life.expectancy` == "" | is.na(data1_filtered$`Life.expectancy`)), ]
+data1_filtered <- dataset %>%
+  filter(Schooling != 0,
+         !is.na(Schooling) & Schooling != "",
+         `Life.expectancy` != 0,
+         !is.na(`Life.expectancy`) & `Life.expectancy` != "")
+```
 
-
+### Descriptive Statistics
+```{r}
 mean_value <- mean(data1_filtered$Schooling)
 median_value <- median(data1_filtered$Schooling)
 max_value <- max(data1_filtered$Schooling)
@@ -1114,6 +1121,7 @@ cat("Min:", min_value, "\n")
 ```
 
 
+### Linear Regression
 ```{r}
 model <- lm(`Life.expectancy` ~ Schooling, data = data1_filtered)
 
@@ -1126,13 +1134,14 @@ Very low p value, can reject null hypothesis, is a relationship between schoolin
 
 R-squared of 0.6139 suggests that 61.39% of the variance in life expectancy is explained by schooling
 
-
+### Residual Plots
 ```{r}
 par(mfrow = c(2, 2))
 plot(model)
 ```
 The majority of the residuals in the residuals vs fitted plot are around the horizontal line at 0 satisfying linearity. The residuals also in the Q-Q plot follow a straight line satisfying normality. The spread of the residuals in the residuals vs fitted plot is also randomly scattered suggesting that homoscedasticity is satisfied.
 
+### Hypothesis Testing: T-Test
 ```{r}
 coef_summary <- summary(model)$coefficients
 t_statistic <- coef_summary["Schooling", "Estimate"] / coef_summary["Schooling", "Std. Error"]
@@ -1164,6 +1173,9 @@ cat("95% Confidence Interval for the Schooling coefficient:", lower_bound, "to",
 ```
 Very strong evidence that for each year of schooling expect life expectancy to increase between 2.26 and 2.38 years.
 
+### Discussion and Conclusion
+
+There is a significant relationship between schooling and life expectancy as shown by the very low p value from the regression model. For every year of schooling we expect life expectancy to increase by about 2.32 years, and about 61% of the variance in life expectancy can be explained by schooling.
 
 ## Hypothesis Testing and Linear Regression between Status(Developed and Developing Countries) & Life Expectancy.
 
