@@ -1681,6 +1681,7 @@ ggplot(coeff_df, aes(x = reorder(Variable, Coefficient), y = Coefficient)) +
   labs(title = "Regression Coefficients", x = "Variables", y = "Coefficient") +
   theme_minimal()
 ```
+We standardize the Income.composition.of.resources to percentage for better interpretation. 
 Conclusion Based on the Multivariate Regression Analysis
 The multivariate regression analysis conducted with the formula Life.expectancy ~ . reveals several key insights regarding the factors influencing life expectancy. The model has a high multiple R-squared value of 0.8202, indicating that approximately 82% of the variance in life expectancy can be explained by the independent variables included in the model.
 
@@ -1713,7 +1714,7 @@ Intercept (Estimate: 51.96): This value represents the expected life expectancy 
 -HIV/AIDS (Estimate: -0.4970): The substantial negative impact of HIV/AIDS on life expectancy is evident, with every additional death per 1,000 live births due to HIV/AIDS decreasing life expectancy by approximately 0.497 years. This highlights the urgent need for interventions targeting HIV prevention and treatment.
 \
 \
--Income Composition of Resources (Estimate: 7.485): This variable has the largest positive coefficient, suggesting that improvements in income composition of resources significantly enhance life expectancy. For every unit increase in this index, life expectancy increases by approximately 7.485 years, indicating the critical role of economic factors in health outcomes.
+-Income Composition of Resources (Estimate: 0.07485): This variable has the largest positive coefficient, suggesting that improvements in income composition of resources significantly enhance life expectancy. For every percentage increase in this index, life expectancy increases by approximately 0.07485 years, indicating the critical role of economic factors in health outcomes.
 \
 \
 - Schooling (Estimate: 0.7806): More years of schooling are positively associated with life expectancy. For each additional year of schooling, life expectancy increases by about 0.78 years, emphasizing the importance of education in promoting better health.
