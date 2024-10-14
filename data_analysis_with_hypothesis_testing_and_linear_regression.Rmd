@@ -9,7 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-## INTRODUCTION
+# INTRODUCTION
 
 In the realm of public health and socio-economic research, understanding life expectancy is pivotal for shaping policies and improving health outcomes. This study, titled "Exploring Life Expectancy: A Data Analysis Using Hypothesis Testing and Linear Regression," delves into the intricate relationships between various health indicators, socio-economic factors, and life expectancy across different countries. By employing rigorous statistical methods such as hypothesis testing and linear regression, the authors aim to uncover patterns and correlations that can inform policymakers and health professionals about the determinants of life expectancy.
 
@@ -1660,7 +1660,7 @@ ggplot(data, aes(x = data$Life.expectancy, y = predicted_values)) +
 ```
 Based on the results from the model without non-significant variables, it is evident that there is no distinction between the two. It can be concluded that the remaining variables significantly influence the dependent variable, which is the life expectancy (Y).
 
-### Summary
+## Summary of MLR
 
 There are 82% accuracy in following summary.
 ```{r}
@@ -1720,7 +1720,7 @@ Intercept (Estimate: 51.96): This value represents the expected life expectancy 
 - Schooling (Estimate: 0.7806): More years of schooling are positively associated with life expectancy. For each additional year of schooling, life expectancy increases by about 0.78 years, emphasizing the importance of education in promoting better health.
 
 
-## SUMMARY
+# SUMMARY
 
 This research highlights the importance of data-driven approaches in understanding life expectancy. Utilizing a comprehensive dataset of 2,938 observations and 22 variables, the research focuses on health, socio-economic, and demographic indicators that contribute to life expectancy rates. The dataset includes critical variables such as adult mortality rates, infant deaths, healthcare expenditure, vaccination rates, and socio-economic status, capturing life expectancy data from developing nations like Afghanistan, where life expectancy has shown significant variability over the years. The authors employed statistical techniques such as hypothesis testing and linear regression to analyze the data, with hypothesis testing helping to determine whether observed differences in life expectancy can be attributed to specific health or socio-economic factors rather than random chance, and linear regression allowing for understanding the relationships between dependent (life expectancy) and independent variables (health indicators). 
 
