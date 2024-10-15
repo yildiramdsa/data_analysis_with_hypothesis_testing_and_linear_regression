@@ -13,6 +13,20 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 Understanding life expectancy is pivotal in public health and socio-economic research for shaping policies and improving health outcomes. This study, "Exploring Life Expectancy: A Data Analysis Using Hypothesis Testing and Linear Regression," delves into the intricate relationships between various health indicators, socio-economic factors, and life expectancy across different countries. By employing rigorous statistical methods such as hypothesis testing and linear regression, the authors aim to uncover patterns and correlations that can inform policymakers and health professionals about the determinants of life expectancy.
 
+The project's objectives:
+
+**Exploratory Data Analysis**: To identify initial patterns, relationships, and insights within the dataset, setting the foundation for further analysis.
+
+**GDP and Life Expectancy Analysis**: To examine the relationship between GDP and life expectancy using hypothesis testing and linear regression, determining the impact of economic factors on health outcomes.
+
+**Schooling and Life Expectancy Analysis**: To investigate how years of schooling correlate with life expectancy through hypothesis testing and linear regression, highlighting the role of education in health.
+
+**Developed vs. Developing Countries Analysis**: To compare life expectancy between developed and developing countries using hypothesis testing, identifying disparities and potential areas for policy intervention.
+
+**Alcohol Consumption and Life Expectancy Analysis**: To explore the correlation between alcohol consumption and life expectancy through hypothesis testing, understanding its impact on health.
+
+**Multiple Linear Regression Analysis**: To perform a comprehensive analysis using multiple linear regression, integrating various factors to predict life expectancy and identify critical determinants.
+
 The analysis utilizes a comprehensive dataset (1) containing 2,938 observations and 22 variables, which include demographic, health, and economic indicators. Key variables analyzed include adult mortality rates, infant deaths, healthcare expenditure, vaccination rates, and socio-economic status. The study aims to provide insights into how these factors influence life expectancy, particularly in developing nations where health disparities are most pronounced.
 
 ```{r}
@@ -996,7 +1010,7 @@ In summary, HDI and Years of Schooling have strong positive correlations with Li
 
 # Hypothesis Testing and Linear Regression
 
-## Hypothesis Testing and Linear Regression for Gross Domestic Product (GDP) & Life Expectancy
+## GDP and Life Expectancy: Hypothesis Testing and Linear Regression
 
 Null Hypothesis ($H_{0}$): There is no significant relationship between GDP and life expectancy.
 
@@ -1102,7 +1116,7 @@ Our analysis reveals:
 
 To sum up, our research indicates that GDP is a positive and statistically significant predictor of life expectancy, but it only partially explains the variance in life expectancy between nations. This shows that other social and environmental factors are just as significant for extending life expectancy as money. Additional studies that take a wider range of variables into account may shed additional light on the factors that influence life expectancy.
 
-## Hypothesis Testing and Linear Regression for Schooling & Life Expectancy
+## Schooling and Life Expectancy: Hypothesis Testing and Linear Regression
 
 There is a linear relationship between Years of Schooling and Life Expectancy (for more details, please see the EDA part for your reference).
 
@@ -1196,7 +1210,7 @@ Very strong evidence is that for each year of schooling, life expectancy is expe
 
 There is a significant relationship between schooling and life expectancy, as shown by the very low p-value in the regression model. For every year of schooling, we expect life expectancy to increase by about 2.32 years, and about 61% of the variance in life expectancy can be explained by schooling.
 
-## Hypothesis Testing and Linear Regression between Status(Developed and Developing Countries) & Life Expectancy
+## Developed vs. Developing Countries: Hypothesis Testing and Linear Regression
 
 ```{r setup1, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -1321,7 +1335,7 @@ The boxplot visualization clearly shows the difference in distributions between 
 
 In conclusion, while development status is a significant predictor of life expectancy, the relationship is complex. Future analyses could explore additional variables and more sophisticated models to better understand the factors influencing life expectancy across different countries.
 
-## Hypothesis Testing between Alcohol Consumption & Life expectancy
+## Alcohol Consumption and Life Expectancy: Hypothesis Testing and Linear Regression
 
 ### Load the Data
 
@@ -1528,7 +1542,7 @@ Observation: The Scale-Location plot provides insight into the homoscedasticity 
 
 Observation: In this plot, a cluster of points is concentrated near zero on both axes, indicating that most points have both low leverage and small residuals, meaning they fit the model well. However, points that are isolated toward the right of the plot (with high leverage) or far above/below the center line (with large residuals) should be examined more closely. 
 
-# Multiple Linear Regression
+# Multiple Linear Regression Analysis
 
 ## Prepocessing Data
 
